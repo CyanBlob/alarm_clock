@@ -1,3 +1,20 @@
-idf_component_register(SRCS "alarm_clock.c" "espnow_example_main.c" "wifi_config.c" "nvs_wrapper.c"
-                    INCLUDE_DIRS "."
-                    REQUIRES esp_wifi nvs_flash)
+idf_component_register(SRCS "main.c"
+"alarm_clock.cpp"
+"espnow_example_main.cpp"
+"wifi_config.cpp"
+"nvs_wrapper.cpp"
+"hub75e/HUB75E_Hal.c"
+"hub75e/HUB75ELib.c"
+"Adafruit_Protomatter/src/Adafruit_Protomatter.cpp"
+"Adafruit_Protomatter/src/core.c"
+"Adafruit-GFX-Library/Adafruit_GFX.cpp"
+"arduino-esp32/cores/esp32/Print.cpp"
+"arduino-esp32/cores/esp32/esp32-hal-gpio.c"
+"arduino-esp32/cores/esp32/esp32-hal-timer.c"
+"arduino-esp32/cores/esp32/esp32-hal-periman.c"
+"arduino-esp32/cores/esp32/esp32-hal-time.c"
+"arduino-esp32/cores/esp32/esp32-hal-misc.c"
+                    INCLUDE_DIRS "." "hub75e" "Adafruit-GFX-Library" "Adafruit_Protomatter/src" "arduino-esp32/cores/esp32" "arduino-esp32/libraries/Wire/src" "Adafruit_BusIO" "arduino-esp32/variants/uPesy_esp32_wroom_devkit" "arduino-esp32/libraries/SPI/src"
+                    REQUIRES esp_wifi nvs_flash esp_driver_gpio esp_driver_i2s esp_timer esp_driver_gptimer)
+
+target_compile_options(${COMPONENT_LIB} PRIVATE -std=gnu++11 -fpermissive)

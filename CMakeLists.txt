@@ -4,5 +4,13 @@
 # CMakeLists in this exact order for cmake to work correctly
 cmake_minimum_required(VERSION 3.16)
 
+add_definitions(-DARDUINO=1)
+
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(alarm_clock)
+#idf_build_component("main/Adafruit_Protomatter")
+idf_build_component("main/arduino-esp32")
+idf_build_component("main/Adafruit-GFX-Library")
+idf_build_component("main/Adafruit_BusIO")
+
+#idf_build_component("main/ESP32-HUB75-MatrixPanel-DMA-3.0.11")
