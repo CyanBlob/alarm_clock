@@ -19,6 +19,7 @@
 #include "esp_smartconfig.h"
 #include "wifi_config.h"
 #include "nvs_wrapper.h"
+#include "sntp_task.h"
 
 static const char *TAG = "wifi_config";
 
@@ -101,6 +102,7 @@ static void sc_event_handler(void *arg, esp_event_base_t event_base,
 }
 
 void wifi_init(void) {
+    ESP_LOGI(TAG, "NVS Init");
     nvs_init();
 
     //ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
@@ -158,25 +160,7 @@ void sc_task(void *parm) {
         }
         if (uxBits & ESPTOUCH_DONE_BIT) {
 
-            esp_sntp_config_t config = ESP_NETIF_SNTP_DEFAULT_CONFIG("pool.ntp.org");
-            esp_netif_sntp_init(&config);
-
-            if (esp_netif_sntp_sync_wait(pdMS_TO_TICKS(20000)) != ESP_OK) {
-                printf("Failed to update system time within 20s timeout");
-            }
-
-            time_t now;
-            char strftime_buf[64];
-            struct tm timeinfo;
-
-            time(&now);
-            // Set timezone to China Standard Time
-            setenv("TZ", "UTC-6", 1);
-            tzset();
-
-            localtime_r(&now, &timeinfo);
-            strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
-            ESP_LOGI(TAG, "The current date/time in Chicago is: %s", strftime_buf);
+            xTaskCreate(sntp_task, "sntp_task", 4096, NULL, 3, NULL);
 
             ESP_LOGI(TAG, "smartconfig over");
             esp_smartconfig_stop();

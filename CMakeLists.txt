@@ -5,6 +5,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 add_definitions(-DARDUINO=1)
+add_definitions(-DSOC_GPTIMER_SUPPORTED=1)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(alarm_clock)
