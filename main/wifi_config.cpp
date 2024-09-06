@@ -55,7 +55,10 @@ void wifi_connect(uint8_t *ssid, uint8_t *password, uint8_t *rvd_data, smartconf
 
     ESP_ERROR_CHECK(esp_wifi_disconnect());
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, wifi_config));
-    esp_wifi_connect();
+    if (esp_wifi_connect() == ESP_OK)
+    {
+        xTaskCreate(sntp_task, "sntp_task", 4096, NULL, 3, NULL);
+    }
 }
 
 static void sc_event_handler(void *arg, esp_event_base_t event_base,
@@ -87,7 +90,7 @@ static void sc_event_handler(void *arg, esp_event_base_t event_base,
         memcpy(ssid, evt->ssid, sizeof(evt->ssid));
         memcpy(password, evt->password, sizeof(evt->password));
 
-        nvs_begin();
+        nvs_begin(NVS_READWRITE);
 
         nvs_set((char*)"SSID", (char*)ssid);
         nvs_set((char*)"password", (char*)password);
@@ -128,15 +131,16 @@ void wifi_init(void) {
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
     ESP_ERROR_CHECK(esp_wifi_start());
 
-    nvs_begin();
+    nvs_begin(NVS_READONLY);
 
     wifi_config_t wifi_config;
     uint8_t ssid[33] = {0};
     uint8_t password[65] = {0};
     uint8_t rvd_data[33] = {0};
 
-    size_t len = 0;
+    size_t len = 33;
     nvs_get((char*)"SSID", (char*)ssid, &len);
+    len = 65;
     nvs_get((char*)"password", (char*)password, &len);
 
     nvs_end();
@@ -159,8 +163,6 @@ void sc_task(void *parm) {
             ESP_LOGI(TAG, "WiFi Connected to ap");
         }
         if (uxBits & ESPTOUCH_DONE_BIT) {
-
-            xTaskCreate(sntp_task, "sntp_task", 4096, NULL, 3, NULL);
 
             ESP_LOGI(TAG, "smartconfig over");
             esp_smartconfig_stop();

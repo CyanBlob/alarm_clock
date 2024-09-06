@@ -29,13 +29,19 @@ void nvs_get(char* key, char* value, size_t* len)
 {
     printf("Getting %s from nvs\n", key);
 
-    __attribute__((unused)) esp_err_t err = nvs_get_str(_nvs_handle, key, value, len);
+    esp_err_t err = nvs_get_str(_nvs_handle, key, value, len);
+
+    if (err != ESP_OK)
+    {
+        printf("Failed to read value: %d\n", err);
+    }
+
     printf("%s: %s\n", key, value);
 }
 
-bool nvs_begin()
+bool nvs_begin(nvs_open_mode_t mode)
 {
-    esp_err_t err = nvs_open("storage", NVS_READWRITE, &_nvs_handle);
+    esp_err_t err = nvs_open("storage", mode, &_nvs_handle);
     if (err != ESP_OK) {
         printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
         return false;
