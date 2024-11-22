@@ -74,7 +74,7 @@ static void ledc_init(void) {
 
 
 void buzz_task(void *parm) {
-    alarm_timeinfo.tm_hour = 99; // disable alarm at startup
+    alarm_timeinfo.tm_min = 99; // disable alarm at startup
     ledc_init();
 
     while (true) {

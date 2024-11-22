@@ -20,6 +20,7 @@ uint8_t brightness = 128;
 
 extern time_t sntp_now;
 extern struct tm sntp_timeinfo;
+extern struct tm alarm_timeinfo;
 
 uint8_t rgbPins[] = {25, 26, 27, 14, 12, 13};
 uint8_t addrPins[] = {23, 22, 5, 2};
@@ -55,6 +56,7 @@ void display_task(void *parm) {
         time(&sntp_now);
 
         char strftime_buf[64];
+        char alarm1_buf[64];
         localtime_r(&sntp_now, &sntp_timeinfo);
 
 
@@ -65,9 +67,11 @@ void display_task(void *parm) {
         } else {
 
             if (true) { // alarm set
+                sprintf(alarm1_buf, "%02d:%02d", alarm_timeinfo.tm_hour % 12, alarm_timeinfo.tm_min);
                 matrix.setCursor(0, 7);
                 matrix.setFont(&NewsflashBB5pt7b);
-                matrix.write("07:00a");
+                matrix.write(alarm1_buf);
+                matrix.write(sntp_timeinfo.tm_hour < 12 ? "p" : "a");
                 matrix.write("   07:00p");
             }
 
