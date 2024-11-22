@@ -54,7 +54,8 @@ extern "C" void app_main()
 
     test_display();
 
-    xTaskCreate(buzz_task, "buzz_task", 1024, NULL, 3, NULL);
+
+    xTaskCreate(buzz_task, "buzz_task", 2048, NULL, 3, NULL);
 
     espnow_app_main();
 

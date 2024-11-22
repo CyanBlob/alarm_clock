@@ -4,6 +4,13 @@
 #include "driver/ledc.h"
 
 #include "pitches.h"
+
+static const char *TAG = "buzz_task";
+
+extern time_t sntp_now;
+extern struct tm sntp_timeinfo;
+extern struct tm alarm_timeinfo;
+
 #define GPIO_OUTPUT_SPEED LEDC_HIGH_SPEED_MODE
 const int BUZZER_PIN = 19;
 
@@ -41,8 +48,7 @@ int noteDurations[] = {
         4, 4
 };
 
-static void ledc_init(void)
-{
+static void ledc_init(void) {
     // Prepare and then apply the LEDC PWM timer configuration
     ledc_timer_config_t ledc_timer = {
             .speed_mode       = LEDC_MODE,
@@ -68,10 +74,32 @@ static void ledc_init(void)
 
 
 void buzz_task(void *parm) {
+    alarm_timeinfo.tm_hour = 99; // disable alarm at startup
     ledc_init();
 
     while (true) {
-        ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, LEDC_DUTY));
+
+        time(&sntp_now);
+
+        char strftime_buf[64];
+        localtime_r(&sntp_now, &sntp_timeinfo);
+
+        sprintf(strftime_buf, "CURNT: %02d:%02d:%02d", sntp_timeinfo.tm_hour % 12, sntp_timeinfo.tm_min,
+                sntp_timeinfo.tm_sec);
+
+        ESP_LOGI(strftime_buf, "");
+
+        sprintf(strftime_buf, "ALARM: %02d:%02d:%02d", alarm_timeinfo.tm_hour % 12, alarm_timeinfo.tm_min,
+                alarm_timeinfo.tm_sec);
+
+        ESP_LOGI(strftime_buf, "");
+
+        if (memcmp(&sntp_timeinfo, &alarm_timeinfo, sizeof(struct tm)) == 0) {
+            ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, LEDC_DUTY));
+            ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
+        }
+
+        /*ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, LEDC_DUTY));
         ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
 
         vTaskDelay((1000 / portTICK_PERIOD_MS) * BUZZ_DELAY_S);
@@ -79,6 +107,7 @@ void buzz_task(void *parm) {
         ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0));
         ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
 
+        vTaskDelay((1000 / portTICK_PERIOD_MS) * BUZZ_DELAY_S);*/
         vTaskDelay((1000 / portTICK_PERIOD_MS) * BUZZ_DELAY_S);
     }
 }

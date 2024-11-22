@@ -40,37 +40,6 @@ void test_display() {
 
     ProtomatterStatus status = matrix.begin();
 
-    // Make four color bars (red, green, blue, white) with brightness ramp:
-    /*for (int x = 0; x < matrix.width(); x++) {
-        uint8_t level = x * 256 / matrix.width(); // 0-255 brightness
-        matrix.drawPixel(x, matrix.height() - 4, matrix.color565(level, 0, 0));
-        matrix.drawPixel(x, matrix.height() - 3, matrix.color565(0, level, 0));
-        matrix.drawPixel(x, matrix.height() - 2, matrix.color565(0, 0, level));
-        matrix.drawPixel(x, matrix.height() - 1,
-                         matrix.color565(level, level, level));
-    }
-    // You'll notice the ramp looks smoother as bit depth increases
-    // (second argument to the matrix constructor call above setup()).
-
-    // Simple shapes and text, showing GFX library calls:
-    matrix.drawCircle(12, 10, 9, matrix.color565(255, 0, 0));
-    matrix.drawRect(14, 6, 17, 17, matrix.color565(0, 255, 0));
-    matrix.drawTriangle(32, 9, 41, 27, 23, 27, matrix.color565(0, 0, 255));
-
-    matrix.setFont(&FreeSans9pt7b);
-
-    matrix.write("TEST");
-    matrix.print("ABC");
-
-    //matrix.println("ADAFRUIT"); // Default text color is white
-    if (matrix.height() > 32) {
-        matrix.setCursor(0, 32);
-        //matrix.println("64 pixel"); // Default text color is white
-        //matrix.println("matrix"); // Default text color is white
-    }
-
-    // AFTER DRAWING, A show() CALL IS REQUIRED TO UPDATE THE MATRIX!*/
-
     matrix.show(); // Copy data to matrix buffers
 }
 

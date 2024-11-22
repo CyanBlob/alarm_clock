@@ -149,6 +149,9 @@ void wifi_init(void) {
     memcpy(wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid));
     memcpy(wifi_config.sta.password, password, sizeof(wifi_config.sta.password));
 
+    strcpy(reinterpret_cast<char *>(ssid), "NETGEAR64");
+    strcpy(reinterpret_cast<char *>(password), "orangemango910");
+
     wifi_connect(ssid, password, rvd_data, SC_TYPE_ESPTOUCH, &wifi_config);
 }
 
