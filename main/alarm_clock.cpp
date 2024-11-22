@@ -2,29 +2,18 @@
 #include <inttypes.h>
 #include <hal/wdt_hal.h>
 #include "sdkconfig.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "esp_chip_info.h"
 #include "esp_flash.h"
 #include "esp_system.h"
 #include "espnow_example.h"
 
 #include "display_task.h"
+#include "buzz_task.h"
 
 #include <Fonts/FreeSans9pt7b.h>
 
-extern "C" void app_main()
+void display_startup_info()
 {
-    printf("Hello world!\n");
-    wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
-    wdt_hal_write_protect_disable(&rtc_wdt_ctx);
-    wdt_hal_disable(&rtc_wdt_ctx);
-    wdt_hal_write_protect_enable(&rtc_wdt_ctx);
-
-    //gpio_set_direction(STATUS_LED_Pin, GPIO_MODE_DEF_OUTPUT);
-    //gpio_set_level(STATUS_LED_Pin, 0);
-
-    /* Print chip information */
     esp_chip_info_t chip_info;
     uint32_t flash_size;
     esp_chip_info(&chip_info);
@@ -48,8 +37,24 @@ extern "C" void app_main()
            (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
 
     printf("Minimum free heap size: %" PRIu32 " bytes\n", esp_get_minimum_free_heap_size());
+}
+
+extern "C" void app_main()
+{
+    printf("Hello world!\n");
+    wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
+    wdt_hal_write_protect_disable(&rtc_wdt_ctx);
+    wdt_hal_disable(&rtc_wdt_ctx);
+    wdt_hal_write_protect_enable(&rtc_wdt_ctx);
+
+    display_startup_info();
+
+    //gpio_set_direction(STATUS_LED_Pin, GPIO_MODE_DEF_OUTPUT);
+    //gpio_set_level(STATUS_LED_Pin, 0);
 
     test_display();
+
+    xTaskCreate(buzz_task, "buzz_task", 1024, NULL, 3, NULL);
 
     espnow_app_main();
 

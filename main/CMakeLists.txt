@@ -5,6 +5,7 @@ idf_component_register(SRCS "main.c"
 "nvs_wrapper.cpp"
 "sntp_task.cpp"
 "display_task.cpp"
+"buzz_task.cpp"
 "Adafruit_Protomatter/src/Adafruit_Protomatter.cpp"
 "Adafruit_Protomatter/src/core.c"
 "Adafruit-GFX-Library/Adafruit_GFX.cpp"
@@ -15,6 +16,6 @@ idf_component_register(SRCS "main.c"
 "arduino-esp32/cores/esp32/esp32-hal-time.c"
 "arduino-esp32/cores/esp32/esp32-hal-misc.c"
                     INCLUDE_DIRS "." "Adafruit-GFX-Library" "Adafruit_Protomatter/src" "arduino-esp32/cores/esp32" "arduino-esp32/libraries/Wire/src" "Adafruit_BusIO" "arduino-esp32/variants/uPesy_esp32_wroom_devkit" "arduino-esp32/libraries/SPI/src"
-                    REQUIRES esp_wifi nvs_flash esp_driver_gpio esp_driver_i2s esp_timer esp_driver_gptimer)
+                    REQUIRES esp_wifi nvs_flash esp_driver_gpio esp_driver_i2s esp_timer esp_driver_gptimer esp_driver_ledc)
 
 target_compile_options(${COMPONENT_LIB} PRIVATE -std=gnu++11 -fpermissive)

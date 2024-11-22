@@ -2,8 +2,6 @@
 #include "display_task.h"
 #include "Adafruit_Protomatter/src/core.h"
 #include "Adafruit_Protomatter.h"
-#include "Fonts/FreeSans9pt7b.h"
-#include "Fonts/FreeMono12pt7b.h"
 #include "Fonts/NewsflashBB20pt7b.h"
 #include "Fonts/NewsflashBB9pt7b.h"
 #include "Fonts/NewsflashBB12pt7b.h"
@@ -17,6 +15,8 @@
 #include "Fonts/NewsflashBB7pt7b.h"
 
 static const char *TAG = "display_task";
+
+uint8_t brightness = 128;
 
 extern time_t sntp_now;
 extern struct tm sntp_timeinfo;
@@ -81,7 +81,7 @@ void display_task(void *parm) {
 
         matrix.fillScreen(0);
 
-        matrix.setTextColor(matrix.color565(8, 8, 8));
+        matrix.setTextColor(matrix.color565(brightness, brightness, brightness));
 
         time(&sntp_now);
 

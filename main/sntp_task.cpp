@@ -30,7 +30,7 @@ void sntp_task(void *parm) {
 
         time(&sntp_now);
         // Set timezone to Chicago Standard Time
-        setenv("TZ", "UTC-7", 1);
+        setenv("TZ", "UTC-6", 1);
         tzset();
 
         char strftime_buf[64];
